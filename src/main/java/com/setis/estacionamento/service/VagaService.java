@@ -1,0 +1,61 @@
+package com.setis.estacionamento.service;
+
+import com.setis.estacionamento.domain.Vaga;
+import com.setis.estacionamento.domain.enums.StatusVaga;
+import com.setis.estacionamento.domain.enums.TipoVaga;
+import com.setis.estacionamento.repository.VagaRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class VagaService {
+
+    private final VagaRepository vagaRepository;
+
+    @Transactional
+    public Vaga criar(Vaga vaga) {
+        if (vagaRepository.existsByCodigo(vaga.getCodigo())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ja existe uma vaga com codigo: {codigo}");
+        }
+
+        return vagaRepository.save(new Vaga(vaga.getCodigo(), vaga.getTipoVaga()));
+    }
+
+    @Transactional
+    public List<Vaga> listar(TipoVaga tipoVaga, StatusVaga statusVaga) {
+        return vagaRepository.buscaComFiltros(tipoVaga, statusVaga);
+    }
+
+    @Transactional
+    public Vaga buscarPorId(UUID id) {
+        return vagaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nao foi encontrada nenhuma vaga com o id: {id}"));
+    }
+
+    @Transactional
+    public Vaga atualizaStatus(UUID id, StatusVaga novoStatus) {
+        Vaga vaga = this.buscarPorId(id);
+
+        if (novoStatus == StatusVaga.OCUPADA) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O status %s nao pode ser definido manualmente"
+                            .formatted(StatusVaga.OCUPADA));
+        }
+        if (novoStatus == StatusVaga.MANUTENCAO && vaga.getStatusVaga() == StatusVaga.OCUPADA) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "A vaga %s esta ocupada e nao pode ir para manutencao"
+                            .formatted(vaga.getCodigo()));
+        }
+
+        vaga.setStatusVaga(novoStatus);
+        return vagaRepository.save(vaga);
+    }
+}
