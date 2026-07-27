@@ -5,7 +5,7 @@ import com.setis.estacionamento.domain.enums.TipoVaga;
 
 import java.util.UUID;
 
-public record CriarVagaResponse (
+public record VagaResponse(
     UUID id,
     String codigo,
     TipoVaga tipoVaga,
