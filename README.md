@@ -60,14 +60,39 @@ Juntamente à Strategy foi implementada uma Factory, responsável pelo "roteamen
 
 8. **permanenciaMinutos é ```null``` na abertura do ticket**. Na especificação, o campo não existe no momento da criação do ticket, porém, como campos nulos não influenciam na avaliação da resposta final (e podem ser ocultados), o campo foi mantido na resposta da criação de tickets.
 
-## Formatos de erro e paginação
+## Formato de erro
+
+A especificação solicita o uso de `@RestControllerAdvice`. Todas as decisões, e criação de exceções, foram baseadas na tentativa de manter o projeto organizado e facilmente ajustável.
+
+O formato de erro escolhido é o mesmo sugerido pela especificação:
+
+```json
+{
+  "status": 422,
+  "codigo": "VAGA_INCOMPATIVEL",
+  "mensagem": "A vaga A-01 nao acomoda veiculos do tipo VAN",
+  "path": "/v1/tickets",
+  "erros": []
+}
+```
+
+Conforme solicitado em RNF03, erros de validação listam todos os campos com erro, não apenas o primeiro. Para garantir consistência, os campos listados são ordenados, pelo tipo do campo, e em sequência pela mensagem de erro em si.
+
+Foram criados diversos códigos de erro (enum `CodigoErro`), para facilitar a padronização das respostas e evitar erros de digitação.
+
+Nenhuma resposta expõe stack trace, SQL ou exceções internas (RNF01). Para evitar esse comportamente, foi necessário definir alguns outros tratadores de exceção, que lidam com erros vindos diretamente do Spring Boot, especialmente considerando que os erros, por padrão, trazem `timestamp`, que fugiria ao formato definido.
+
+
+
+Para certificar que nenhum erro fugiria às regras de retorno, foi definido também um protocolo de fallback, que usa um Logger para registrar o erro internamente, e retorna `500`, sem expor erros internos, apenas reconhecendo o erro. Esse protocolo ajuda também a encontrar possíveis exceções que não foram corretamente tratadas, e que acabam caindo no fallback.
+
+## Formato de paginação
 
 Ainda não implementado
 
 ## O que ficou de fora
 
 * RF06
-* RNF01
 * Possíveis descumprimentos do contrato da API, será feita checagem antes do prazo final de entrega, mas é necessário implementar RNF01.
 * Critérios de Destaque
 
@@ -78,6 +103,11 @@ Todos os componentes listados acima não foram implementados, devido ao pouco te
 **Não foi utilizado IA para o desenvolvimento de nenhuma parte do código do projeto**
 
 No sentido de desenvolvimento, o uso de inteligência artificial se restringiu a estudo das tecnologias utilizadas e pesquisa de possíveis decisões técnicas, assim como os seus trade-offs, permitindo que decisões de projeto fossem definidas com mais assertividade.
+
+Entre os principais motivos de consulta a ferramentas de pesquisa/IA estão:
+ * Boas práticas relacionadas às tecnologias aplicadas
+ * Melhores decisões de arquitetura e seus trade-offs
+ * Consulta de quais exceções precisariam ser tratadas, que não estavam diretamente listadas no código desenvolvido (funcionamento interno do Spring Boot)
 
 Fora do desenvolvimento direto do projeto, foi utilizada IA (Claude) para acelerar processos repetitivos, sendo eles:
 
