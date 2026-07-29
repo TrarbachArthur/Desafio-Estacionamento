@@ -3,6 +3,8 @@ package com.setis.estacionamento.service;
 import com.setis.estacionamento.domain.Vaga;
 import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVaga;
+import com.setis.estacionamento.exception.CodigoErro;
+import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.repository.VagaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,8 @@ public class VagaService {
     @Transactional
     public Vaga criar(Vaga vaga) {
         if (vagaRepository.existsByCodigo(vaga.getCodigo())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ja existe uma vaga com codigo: {codigo}");
+            throw new ConflictException(CodigoErro.CODIGO_VAGA_DUPLICADO,
+                    "Ja existe uma vaga com o codigo %s".formatted(vaga.getCodigo()));
         }
 
         return vagaRepository.save(new Vaga(vaga.getCodigo(), vaga.getTipoVaga()));
@@ -50,9 +53,9 @@ public class VagaService {
                             .formatted(StatusVaga.OCUPADA));
         }
         if (novoStatus == StatusVaga.MANUTENCAO && vaga.getStatusVaga() == StatusVaga.OCUPADA) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "A vaga %s esta ocupada e nao pode ir para manutencao"
-                            .formatted(vaga.getCodigo()));
+            throw new ConflictException(CodigoErro.VAGA_OCUPADA,
+                    "A vaga %s esta %s e nao pode ir para %s"
+                            .formatted(vaga.getCodigo(), StatusVaga.OCUPADA,  StatusVaga.MANUTENCAO));
         }
 
         vaga.setStatusVaga(novoStatus);

@@ -1,6 +1,8 @@
 package com.setis.estacionamento.service;
 
 import com.setis.estacionamento.domain.Cliente;
+import com.setis.estacionamento.exception.CodigoErro;
+import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,8 @@ public class ClienteService {
     @Transactional
     public Cliente criar(Cliente cliente) {
         if (clienteRepository.existsByDocumento(cliente.getDocumento())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Ja existe um cliente com o documento %s".formatted(cliente.getDocumento()));
+            throw new ConflictException(CodigoErro.DOCUMENTO_DUPLICADO,
+                    "O documento informado ja esta associado a um cliente");
         }
 
         return clienteRepository.save(

@@ -11,6 +11,8 @@ import com.setis.estacionamento.domain.enums.StatusTicket;
 import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVeiculo;
 import com.setis.estacionamento.dto.request.AbrirTicketRequest;
+import com.setis.estacionamento.exception.CodigoErro;
+import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,7 @@ public class TicketService {
         LocalDateTime entrada = resolverEntrada(request.entrada());
 
         if (ticketRepository.existsByPlacaAndStatus(request.placa(), StatusTicket.ABERTO)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
+            throw new ConflictException(CodigoErro.TICKET_ABERTO_EXISTENTE,
                     "Ja existe um ticket aberto para a placa %s".formatted(request.placa()));
         }
 
@@ -63,7 +65,7 @@ public class TicketService {
         Ticket ticket = this.buscarPorId(id);
 
         if (!ticket.getStatus().equals(StatusTicket.ABERTO)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
+            throw new ConflictException(CodigoErro.TICKET_NAO_ABERTO,
                     "O ticket %s esta %s e nao pode ser encerrado".formatted(id, ticket.getStatus()));
         }
 
@@ -130,8 +132,8 @@ public class TicketService {
 
     private void verificarVaga(Vaga vaga, TipoVeiculo tipoVeiculo) {
         if (vaga.getStatusVaga() != StatusVaga.LIVRE) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "A vaga %s tem status %s e nao esta livre".formatted(vaga.getCodigo(), vaga.getStatusVaga()));
+            throw new ConflictException(CodigoErro.VAGA_INDISPONIVEL,
+                    "A vaga %s tem status %s e nao esta disponivel".formatted(vaga.getCodigo(), vaga.getStatusVaga()));
         }
         if (!vaga.getTipoVaga().acomoda(tipoVeiculo)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
