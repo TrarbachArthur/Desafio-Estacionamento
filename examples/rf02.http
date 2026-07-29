@@ -1,0 +1,87 @@
+@host = http://localhost:8080
+
+# Clientes do seed
+@clienteVigente = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@clienteVencido = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+###############################################################################
+# RF02 — Gestao de clientes mensalistas
+###############################################################################
+
+### [201] Cadastra cliente
+POST {{host}}/v1/clientes
+Content-Type: application/json
+
+{
+  "nome": "Ana Souza",
+  "documento": "11122233344",
+  "assinaturaValidaAte": "2027-12-31"
+}
+
+### [409] Documento duplicado (RF02.1) — usa o documento do cliente do seed
+POST {{host}}/v1/clientes
+Content-Type: application/json
+
+{
+  "nome": "Outro Nome",
+  "documento": "11122233344",
+  "assinaturaValidaAte": "2027-12-31"
+}
+
+### [400] Documento invalido e nome curto — a resposta deve listar os dois campos (nao implementado)
+POST {{host}}/v1/clientes
+Content-Type: application/json
+
+{
+  "nome": "Jo",
+  "documento": "123",
+  "assinaturaValidaAte": "2027-12-31"
+}
+
+### [400] Formato de data invalido
+POST {{host}}/v1/clientes
+Content-Type: application/json
+
+{
+  "nome": "Carlos Lima",
+  "documento": "22233344455",
+  "assinaturaValidaAte": "31/12/2027"
+}
+
+### [201] Assinatura no passado e permitida no cadastro (RF02.3)
+POST {{host}}/v1/clientes
+Content-Type: application/json
+
+{
+  "nome": "Pedro Vencido",
+  "documento": "33344455566",
+  "assinaturaValidaAte": "2020-01-01"
+}
+
+### [200] Consulta cliente com assinatura vigente
+GET {{host}}/v1/clientes/{{clienteVigente}}
+
+### [200] Consulta cliente com assinatura vencida — observe assinaturaVigente: false
+GET {{host}}/v1/clientes/{{clienteVencido}}
+
+### [404] Cliente inexistente
+GET {{host}}/v1/clientes/{{idInexistente}}
+
+### [200] Atualiza nome e vigencia (documento e imutavel)
+PUT {{host}}/v1/clientes/{{clienteVencido}}
+Content-Type: application/json
+
+{
+  "nome": "Joao Vencido Renovado",
+  "assinaturaValidaAte": "2028-06-30"
+}
+
+### [400] Atualizacao sem campos obrigatorios
+PUT {{host}}/v1/clientes/{{clienteVigente}}
+Content-Type: application/json
+
+{
+}

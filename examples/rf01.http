@@ -1,0 +1,124 @@
+@host = http://localhost:8080
+
+# Vagas do seed
+@vagaMoto = 11111111-1111-1111-1111-111111111111
+@vagaPadrao = 22222222-2222-2222-2222-222222222222
+@vagaGrande = 33333333-3333-3333-3333-333333333333
+@vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+###############################################################################
+# RF01 — Gestao de vagas
+###############################################################################
+
+### [201] Cadastra vaga
+POST {{host}}/v1/vagas
+Content-Type: application/json
+
+{
+  "codigo": "B-01",
+  "tipo": "PADRAO"
+}
+
+### [409] Codigo de vaga duplicado (RF01.1) — mesma request do bloco acima
+POST {{host}}/v1/vagas
+Content-Type: application/json
+
+{
+  "codigo": "B-01",
+  "tipo": "PADRAO"
+}
+
+### [400] Validacao: codigo vazio e tipo ausente — a resposta deve listar os dois campos (nao implementado)
+POST {{host}}/v1/vagas
+Content-Type: application/json
+
+{
+  "codigo": "",
+  "tipo": null
+}
+
+### [400] Codigo acima de 10 caracteres
+POST {{host}}/v1/vagas
+Content-Type: application/json
+
+{
+  "codigo": "CODIGO-MUITO-LONGO",
+  "tipo": "GRANDE"
+}
+
+### [400] Tipo de vaga inexistente no enum
+POST {{host}}/v1/vagas
+Content-Type: application/json
+
+{
+  "codigo": "B-02",
+  "tipo": "GIGANTE"
+}
+
+### [200] Lista todas as vagas (sem paginacao — ver premissa 9 no README)
+GET {{host}}/v1/vagas
+
+### [200] Filtra por tipo
+GET {{host}}/v1/vagas?tipo=MOTO
+
+### [200] Filtra por status
+GET {{host}}/v1/vagas?status=MANUTENCAO
+
+### [200] Filtros combinados
+GET {{host}}/v1/vagas?tipo=PADRAO&status=LIVRE
+
+### [400] Valor de enum invalido em query param — nunca 500
+GET {{host}}/v1/vagas?tipo=GIGANTE
+
+### [200] Consulta vaga por id
+GET {{host}}/v1/vagas/{{vagaPadrao}}
+
+### [404] Vaga inexistente
+GET {{host}}/v1/vagas/{{idInexistente}}
+
+### [400] UUID malformado no path
+GET {{host}}/v1/vagas/nao-e-uuid
+
+### [200] Envia vaga para manutencao
+PUT {{host}}/v1/vagas/{{vagaPadrao}}/status
+Content-Type: application/json
+
+{
+  "status": "MANUTENCAO"
+}
+
+### [200] Devolve vaga para operacao
+PUT {{host}}/v1/vagas/{{vagaPadrao}}/status
+Content-Type: application/json
+
+{
+  "status": "LIVRE"
+}
+
+### [400] OCUPADA nao pode ser definida manualmente (RF01.3)
+PUT {{host}}/v1/vagas/{{vagaPadrao}}/status
+Content-Type: application/json
+
+{
+  "status": "OCUPADA"
+}
+
+### [400] Status ausente
+PUT {{host}}/v1/vagas/{{vagaPadrao}}/status
+Content-Type: application/json
+
+{
+}
+
+### [404] Alteracao de status em vaga inexistente
+PUT {{host}}/v1/vagas/{{idInexistente}}/status
+Content-Type: application/json
+
+{
+  "status": "LIVRE"
+}
+
+

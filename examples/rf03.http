@@ -1,0 +1,184 @@
+@host = localhost:8080
+
+# Vagas do seed
+@vagaMoto = 11111111-1111-1111-1111-111111111111
+@vagaPadrao = 22222222-2222-2222-2222-222222222222
+@vagaPadrao1 = 22222222-2222-2222-2222-000000000002
+@vagaGrande = 33333333-3333-3333-3333-333333333333
+@vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+
+# Clientes do seed
+@clienteVigente = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@clienteVencido = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+###############################################################################
+# RF03 — Abertura de ticket
+###############################################################################
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO"
+}
+
+### [201] Abre ticket AVULSO com entrada informada — placa minuscula (exemplo do SRS 6.1)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "xyz9876",
+  "tipoVeiculo": "MOTO",
+  "vagaId": "{{vagaMoto}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [201] Abre ticket MENSALISTA com assinatura vigente
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "MEN1A23",
+  "tipoVeiculo": "VAN",
+  "vagaId": "{{vagaGrande}}",
+  "plano": "MENSALISTA",
+  "clienteId": "{{clienteVigente}}",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [409] Placa ja possui ticket ABERTO (RF03.2)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "ABC1D23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "AVULSO"
+}
+
+### [409] Vaga ocupada (RF03.3)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "OCU1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO"
+}
+
+### [409] Vaga em manutencao (RF03.3)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "MAN1234",
+  "tipoVeiculo": "VAN",
+  "vagaId": "{{vagaEmManutencao}}",
+  "plano": "AVULSO"
+}
+
+### [422] Vaga incompativel: VAN em vaga PADRAO (RF03.4)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "INC5678",
+  "tipoVeiculo": "VAN",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "AVULSO"
+}
+
+### [404] Vaga inexistente (RF03.3)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "NAO1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{idInexistente}}",
+  "plano": "AVULSO"
+}
+
+### [400] MENSALISTA sem clienteId (RF03.5)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "SEM1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "MENSALISTA"
+}
+
+### [404] MENSALISTA com clienteId inexistente (RF03.5)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "SEM5678",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "MENSALISTA",
+  "clienteId": "{{idInexistente}}"
+}
+
+### [400] clienteId informado para plano que nao e MENSALISTA (RF03.6)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "IND1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "AVULSO",
+  "clienteId": "{{clienteVigente}}"
+}
+
+### [400] Entrada no futuro (RF03.7)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "FUT1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "AVULSO",
+  "entrada": "2099-01-01T10:00:00"
+}
+
+### [400] Placa fora dos dois formatos aceitos (RF03.1)
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "ABC-1234",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao1}}",
+  "plano": "AVULSO"
+}
+
+### [400] Multiplos campos invalidos de uma vez
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "12345",
+  "vagaId": null,
+  "plano": null
+}
+
+### [400] JSON malformado
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{ "placa": "ABC1234", }
