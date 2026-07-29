@@ -2,16 +2,20 @@ package com.setis.estacionamento.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ExceptionResponse> handleGeneralException(GeneralException ex, HttpServletRequest request) {
@@ -116,6 +122,62 @@ public class RestExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(corpo);
+    }
+
+    // 404 - Rota inexistente
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleNoResourceFoundException(
+            NoResourceFoundException ex, HttpServletRequest request) {
+
+        ExceptionResponse corpo = new ExceptionResponse(
+                ex.getStatusCode().value(), CodigoErro.RECURSO_NAO_ENCONTRADO,
+                "Rota nao encontrada", request.getRequestURI()
+        );
+
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(corpo);
+    }
+
+    // 405 - verbo HTTP nao suportado
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+
+        ExceptionResponse corpo = new ExceptionResponse(
+                HttpStatus.METHOD_NOT_ALLOWED.value(), CodigoErro.METODO_NAO_SUPORTADO,
+                "O metodo %s nao e suportado neste recurso".formatted(ex.getMethod()),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(corpo);
+    }
+
+    // 415 - Content-type nao suportado
+    @ExceptionHandler(HttpMediaTypeException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMediaTypeException(
+            HttpMediaTypeException ex, HttpServletRequest request) {
+
+        ExceptionResponse corpo = new ExceptionResponse(
+                ex.getStatusCode().value(), CodigoErro.MIDIA_NAO_SUPORTADA,
+                "Content-type nao suportado. Utilize application/json.",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(corpo);
+    }
+
+    // Fallback - Caso alguma excecao nao tenha sido devidamente tratada
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(
+            Exception ex, HttpServletRequest request) {
+
+        log.error("Excecao nao tratada em {} {}", request.getMethod(), request.getRequestURI(), ex);
+
+        ExceptionResponse corpo = new ExceptionResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), CodigoErro.ERRO_INTERNO,
+                "Erro interno. Tente novamente ou contate um admin", request.getRequestURI()
+        );
+
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(corpo);
     }
 
     private Erro toErro(FieldError fieldError) {
