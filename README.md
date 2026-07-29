@@ -70,7 +70,7 @@ O formato de erro escolhido é o mesmo sugerido pela especificação:
 {
   "status": 422,
   "codigo": "VAGA_INCOMPATIVEL",
-  "mensagem": "A vaga A-01 nao acomoda veiculos do tipo VAN",
+  "mensagem": "A vaga A-01 nao atende ao tipo de veiculo VAN",
   "path": "/v1/tickets",
   "erros": []
 }
