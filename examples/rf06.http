@@ -1,0 +1,80 @@
+# Funcioamento ideal após a execução de rf04.http e rf05.http
+# Arquivos anteriores preenchem o banco, permitindo consultas
+
+@host = localhost:8080
+
+# Vagas do seed
+@vagaMoto = 11111111-1111-1111-1111-111111111111
+@vagaPadrao = 22222222-2222-2222-2222-000000000007
+@vagaGrande = 33333333-3333-3333-3333-333333333333
+@vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+
+# Clientes do seed
+@clienteVigente = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@clienteVencido = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+# Atualizar ticketId com um id valido a cada execucao
+@ticketId = 3921d789-0ef5-45d4-b417-6b9c00d2b484
+
+###############################################################################
+# RF06 — Consulta de tickets
+###############################################################################
+
+### [200] Consulta ticket por id
+GET {{host}}/v1/tickets/{{ticketId}}
+
+### [404] Ticket inexistente
+GET {{host}}/v1/tickets/{{idInexistente}}
+
+### [200] Lista sem filtros — paginada, tamanho padrao 10
+GET {{host}}/v1/tickets
+
+### [200] Segunda pagina com 2 itens
+GET {{host}}/v1/tickets?page=1&size=2
+
+### [200] Teto de tamanho: size acima do maximo e ajustado para 50
+GET {{host}}/v1/tickets?size=100000
+
+### [200] Filtra por placa (a busca normaliza a caixa)
+GET {{host}}/v1/tickets?placa=abc1m23
+
+### [200] Filtra por status
+GET {{host}}/v1/tickets?status=ABERTO
+
+### [200] Filtra por plano
+GET {{host}}/v1/tickets?plano=AVULSO
+
+### [200] Filtra por periodo de entrada — limites inclusivos
+GET {{host}}/v1/tickets?dataInicio=2026-03-10&dataFim=2026-03-10
+
+### [200] Filtros combinados
+GET {{host}}/v1/tickets?plano=AVULSO&status=ENCERRADO&dataInicio=2026-03-01&dataFim=2026-03-31
+
+### [400] dataInicio posterior a dataFim (RF06.3)
+GET {{host}}/v1/tickets?dataInicio=2026-03-20&dataFim=2026-03-10
+
+### [400] Valor de enum invalido
+GET {{host}}/v1/tickets?status=PENDENTE
+
+### [400] Formato de data invalido (RF06.2)
+GET {{host}}/v1/tickets?dataInicio=10-03-2026
+
+
+###############################################################################
+# Erros de protocolo
+###############################################################################
+
+### [404] Rota inexistente
+GET {{host}}/v1/inexistente
+
+### [405] Verbo nao suportado pelo recurso
+DELETE {{host}}/v1/vagas
+
+### [415] Content-Type nao suportado
+POST {{host}}/v1/vagas
+Content-Type: text/plain
+
+codigo=B-03

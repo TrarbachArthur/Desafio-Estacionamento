@@ -16,12 +16,16 @@ import com.setis.estacionamento.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.NotFound;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Service
@@ -98,6 +102,25 @@ public class TicketService {
                 .orElseThrow(() -> new NotFoundException("Ticket", id));
     }
 
+
+    @Transactional
+    public Page<Ticket> buscarComFiltro(
+            String placa, StatusTicket status, Plano plano,
+            LocalDate dataInicio, LocalDate dataFim, Pageable paginacao) {
+
+        if (dataInicio != null && dataFim != null && dataInicio.isAfter(dataFim)) {
+            throw new BadRequestException(CodigoErro.ENTRADA_FUTURA,
+                    "dataInicio (%s) nao pode ser posterior a dataFim (%s)".formatted(dataInicio, dataFim));
+        }
+
+        // Garantindo que o dia inteiro e considerado no filtro (inclusivo)
+        LocalDateTime inicio = dataInicio == null ? null : dataInicio.atStartOfDay();
+        LocalDateTime fim = dataFim == null ? null : dataFim.atTime(LocalTime.MAX);
+
+        placa = placa == null ? null : placa.trim().toUpperCase();
+
+        return ticketRepository.buscarComFiltros(placa, status, plano, inicio, fim, paginacao);
+    }
 
     // Funcoes auxiliares
 
