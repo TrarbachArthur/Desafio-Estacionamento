@@ -85,3 +85,12 @@ Content-Type: application/json
 
 {
 }
+
+### [404] Atualiza nome e vigencia (cliente inexistente)
+PUT {{host}}/v1/clientes/{{idInexistente}}
+Content-Type: application/json
+
+{
+  "nome": "Joao Vencido Renovado",
+  "assinaturaValidaAte": "2028-06-30"
+}

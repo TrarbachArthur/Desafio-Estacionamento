@@ -23,7 +23,7 @@ POST {{host}}/v1/tickets
 Content-Type: application/json
 
 {
-  "placa": "abc1d23",
+  "placa": "abc1a23",
   "tipoVeiculo": "CARRO",
   "vagaId": "{{vagaPadrao}}",
   "plano": "AVULSO"
@@ -59,7 +59,7 @@ POST {{host}}/v1/tickets
 Content-Type: application/json
 
 {
-  "placa": "ABC1D23",
+  "placa": "ABC1a23",
   "tipoVeiculo": "CARRO",
   "vagaId": "{{vagaPadrao1}}",
   "plano": "AVULSO"

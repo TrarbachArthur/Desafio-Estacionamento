@@ -59,7 +59,7 @@ Content-Type: application/json
   "tipo": "GIGANTE"
 }
 
-### [200] Lista todas as vagas (sem paginacao — ver premissa 9 no README)
+### [200] Lista todas as vagas (sem paginacao)
 GET {{host}}/v1/vagas
 
 ### [200] Filtra por tipo
