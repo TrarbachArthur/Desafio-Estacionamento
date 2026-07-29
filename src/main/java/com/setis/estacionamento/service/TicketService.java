@@ -14,6 +14,7 @@ import com.setis.estacionamento.dto.request.AbrirTicketRequest;
 import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.exception.NotFoundException;
+import com.setis.estacionamento.exception.UnprocessableException;
 import com.setis.estacionamento.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +75,7 @@ public class TicketService {
         LocalDateTime saida = saidaInformada == null ? LocalDateTime.now() : saidaInformada;
 
         if (saida.isBefore(ticket.getEntrada())) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+            throw new UnprocessableException(CodigoErro.SAIDA_ANTERIOR_ENTRADA,
                     "A saida nao pode ser anterior a entrada.");
         }
 
@@ -138,7 +139,7 @@ public class TicketService {
                     "A vaga %s tem status %s e nao esta disponivel".formatted(vaga.getCodigo(), vaga.getStatusVaga()));
         }
         if (!vaga.getTipoVaga().acomoda(tipoVeiculo)) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+            throw new UnprocessableException(CodigoErro.VAGA_INCOMPATIVEL,
                     "A vaga %s nao atende ao tipo de veiculo %s".formatted(vaga.getCodigo(), tipoVeiculo));
         }
     }
