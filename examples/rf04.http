@@ -1,0 +1,82 @@
+@host = localhost:8080
+
+# Vagas do seed
+@vagaMoto = 11111111-1111-1111-1111-111111111111
+@vagaPadrao = 22222222-2222-2222-2222-222222222222
+@vagaGrande = 33333333-3333-3333-3333-333333333333
+@vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+
+# Clientes do seed
+@clienteVigente = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@clienteVencido = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+# Substitua {{ticketId}} pelo id devolvido na abertura.
+# Deve ser feito para cada encerramento bem sucedido
+# Limitacao do processo de teste
+
+@ticketId = 2ee44523-91a2-4272-8ad5-2acf030176bb
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T11:30:00"
+}
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO"
+}
+
+### [200] Encerra sem corpo — usa o instante atual do servidor (RF04.2)
+POST {{host}}/v1/tickets/{{ticketId}}/encerramento
+Content-Type: application/json
+
+### [409] Ticket ja encerrado (RF04.1) — rode o bloco acima duas vezes
+POST {{host}}/v1/tickets/{{ticketId}}/encerramento
+Content-Type: application/json
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO"
+}
+
+### [422] Saida anterior a entrada (RF04.3)
+POST {{host}}/v1/tickets/{{ticketId}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2020-01-01T00:00:00"
+}
+
+### [404] Encerramento de ticket inexistente
+POST {{host}}/v1/tickets/{{idInexistente}}/encerramento
+Content-Type: application/json

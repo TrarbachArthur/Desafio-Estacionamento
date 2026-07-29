@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -52,6 +53,45 @@ public class TicketService {
 
         return ticketRepository.save(ticket);
     }
+
+    @Transactional
+    public Ticket encerrar(UUID id, LocalDateTime saidaInformada) {
+        Ticket ticket = this.buscarPorId(id);
+
+        if (!ticket.getStatus().equals(StatusTicket.ABERTO)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "O ticket %s esta %s e nao pode ser encerrado".formatted(id, ticket.getStatus()));
+        }
+
+        LocalDateTime saida = saidaInformada == null ? LocalDateTime.now() : saidaInformada;
+
+        if (saida.isBefore(ticket.getEntrada())) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "A saida nao pode ser anterior a entrada.");
+        }
+
+        // PLACEHOLDERS !!!
+        // TODO: calcular valor e planoAplicado pela política de plano
+        ticket.setSaida(saida);
+        ticket.setPlanoAplicado(ticket.getPlano());
+        ticket.setValorTotal(new BigDecimal("12.00"));
+
+        ticket.setStatus(StatusTicket.ENCERRADO);
+
+        ticket.getVaga().setStatusVaga(StatusVaga.LIVRE);
+
+        ticketRepository.save(ticket);
+        return ticket;
+    }
+
+    @Transactional
+    public Ticket buscarPorId(UUID id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+
+    // Funcoes auxiliares
 
     private Cliente verificarCliente(AbrirTicketRequest request) {
         UUID clienteId = request.clienteId();
