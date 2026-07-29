@@ -17,7 +17,7 @@
 # Deve ser feito para cada encerramento bem sucedido
 # Limitacao do processo de teste
 
-@ticketId = 2ee44523-91a2-4272-8ad5-2acf030176bb
+@ticketId = f94432ea-6ad7-4746-bec5-2718d9b9d07d
 
 ### [201] Abre ticket AVULSO com entrada do servidor
 POST {{host}}/v1/tickets

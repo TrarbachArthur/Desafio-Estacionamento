@@ -5,6 +5,7 @@
 @vagaPadrao = 22222222-2222-2222-2222-222222222222
 @vagaGrande = 33333333-3333-3333-3333-333333333333
 @vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+@vagaOcupada = 44444444-4444-4444-4444-444444444443
 
 # Id inexistente, para os cenarios de 404
 @idInexistente = 00000000-0000-0000-0000-000000000000
@@ -105,6 +106,15 @@ Content-Type: application/json
 {
   "status": "OCUPADA"
 }
+
+### [409] OCUPADA nao pode ser enviada pra MANUTENCAO
+PUT {{host}}/v1/vagas/{{vagaOcupada}}/status
+Content-Type: application/json
+
+{
+  "status": "MANUTENCAO"
+}
+
 
 ### [400] Status ausente
 PUT {{host}}/v1/vagas/{{vagaPadrao}}/status

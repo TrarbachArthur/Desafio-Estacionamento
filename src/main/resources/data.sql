@@ -31,6 +31,10 @@ insert into vaga (id, codigo, tipo, status) values
   ('22222222-2222-2222-2222-000000000011', 'A-11', 'PADRAO', 'LIVRE'),
   ('22222222-2222-2222-2222-000000000012', 'A-12', 'PADRAO', 'LIVRE');
 
+-- Uma vaga OCUPADA, para demonstrar o 409 ao tentar alterar para MANUTENCAO (RF01).
+insert into vaga (id, codigo, tipo, status) values
+  ('44444444-4444-4444-4444-444444444443', 'X-98', 'GRANDE', 'OCUPADA');
+
 -- Uma vaga em MANUTENCAO, para demonstrar o 409 distinto de "ocupada" (RF03.3).
 insert into vaga (id, codigo, tipo, status) values
   ('44444444-4444-4444-4444-444444444444', 'X-99', 'GRANDE', 'MANUTENCAO');
