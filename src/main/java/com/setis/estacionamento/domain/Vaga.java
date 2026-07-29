@@ -23,11 +23,11 @@ public class Vaga {
     @Column (nullable = false, unique = true, length = 10)
     private String codigo;
 
-    @Column (nullable = false)
+    @Column (name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoVaga tipoVaga;
 
-    @Column (nullable = false)
+    @Column (name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusVaga statusVaga;
 
