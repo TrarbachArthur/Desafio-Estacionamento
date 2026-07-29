@@ -1,0 +1,296 @@
+@host = localhost:8080
+
+# Vagas do seed
+@vagaMoto = 11111111-1111-1111-1111-111111111111
+@vagaPadrao = 22222222-2222-2222-2222-222222222222
+@vagaGrande = 33333333-3333-3333-3333-333333333333
+@vagaEmManutencao = 44444444-4444-4444-4444-444444444444
+
+# Clientes do seed
+@clienteVigente = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@clienteVencido = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+# Id inexistente, para os cenarios de 404
+@idInexistente = 00000000-0000-0000-0000-000000000000
+
+# Replica de todos os casos da tabela de referência
+# Necessário atualizar os Ids a cada criacao de ticket
+
+### CASO 1
+@ticketId1 = 63da049d-5142-4ca5-b042-975068007351
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId1}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T08:10:00"
+}
+
+
+### CASO 2
+@ticketId2 = a74713d4-b531-406b-994b-bee78393a883
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId2}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T08:15:00"
+}
+
+### CASO 3
+@ticketId3 = 7ddd780d-888a-4bb6-aa4d-af6f871e68c0
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId3}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T08:16:00"
+}
+
+### CASO 4
+@ticketId4 = 9f921a83-ba9e-4764-af46-ea424ee0adb4
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId4}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T09:00:00"
+}
+
+### CASO 5
+@ticketId5 = 6ce123c3-eb39-4d75-935d-5435b7cfa821
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId5}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T09:01:00"
+}
+
+### CASO 6
+@ticketId6 = cdba432b-d513-4a07-a566-a7b458657bd5
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId6}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T11:30:00"
+}
+
+### CASO 7
+@ticketId7 = 80f56cf9-63ac-4c43-9fa7-add2a8109424
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId7}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T18:00:00"
+}
+
+### CASO 8
+@ticketId8 = 6eb4d055-a760-40d0-b1d5-f6feb7afd666
+
+### [201] Abre ticket AVULSO com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "AVULSO",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId8}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-11T10:00:00"
+}
+
+### CASO 9
+@ticketId9 = 21668c83-a2a6-4e8f-8769-4ec6902c4b16
+
+### [201] Abre ticket DIARIA com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "DIARIA",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId9}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T20:00:00"
+}
+
+### CASO 10
+@ticketId10 = 9f6a00f4-d3cf-4d0a-ae56-5edadbdb4547
+
+### [201] Abre ticket DIARIA com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "DIARIA",
+  "entrada": "2026-03-10T23:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId10}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-11T01:00:00"
+}
+
+### CASO 11
+@ticketId11 = bfd791e2-47ca-4669-a275-1732cc5dfe76
+
+### [201] Abre ticket DIARIA com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "MENSALISTA",
+  "clienteId": "{{clienteVigente}}",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId11}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T20:00:00"
+}
+
+### CASO 12
+@ticketId12 = 2983510b-c12a-4dab-9946-8ebcdd49372d
+
+### [201] Abre ticket DIARIA com entrada do servidor
+POST {{host}}/v1/tickets
+Content-Type: application/json
+
+{
+  "placa": "abc1d23",
+  "tipoVeiculo": "CARRO",
+  "vagaId": "{{vagaPadrao}}",
+  "plano": "MENSALISTA",
+  "clienteId": "{{clienteVencido}}",
+  "entrada": "2026-03-10T08:00:00"
+}
+
+### [200] Encerra com saida informada
+POST {{host}}/v1/tickets/{{ticketId12}}/encerramento
+Content-Type: application/json
+
+{
+  "saida": "2026-03-10T09:01:00"
+}

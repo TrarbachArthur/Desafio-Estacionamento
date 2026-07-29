@@ -3,6 +3,9 @@ package com.setis.estacionamento.service;
 import com.setis.estacionamento.domain.Cliente;
 import com.setis.estacionamento.domain.Ticket;
 import com.setis.estacionamento.domain.Vaga;
+import com.setis.estacionamento.domain.cobranca.ContextoCobranca;
+import com.setis.estacionamento.domain.cobranca.PoliticaFactory;
+import com.setis.estacionamento.domain.cobranca.ResultadoCobranca;
 import com.setis.estacionamento.domain.enums.Plano;
 import com.setis.estacionamento.domain.enums.StatusTicket;
 import com.setis.estacionamento.domain.enums.StatusVaga;
@@ -26,6 +29,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final ClienteService clienteService;
     private final VagaService vagaService;
+    private final PoliticaFactory politicaFactory;
 
     @Transactional
     public Ticket abrir(AbrirTicketRequest request) {
@@ -70,11 +74,13 @@ public class TicketService {
                     "A saida nao pode ser anterior a entrada.");
         }
 
-        // PLACEHOLDERS !!!
-        // TODO: calcular valor e planoAplicado pela política de plano
+        ContextoCobranca contexto = new ContextoCobranca(ticket.getEntrada(), saida, ticket.getCliente());
+        ResultadoCobranca cobranca = politicaFactory.obterPolitica(ticket.getPlano())
+                .calcular(contexto);
+
         ticket.setSaida(saida);
-        ticket.setPlanoAplicado(ticket.getPlano());
-        ticket.setValorTotal(new BigDecimal("12.00"));
+        ticket.setPlanoAplicado(cobranca.plano());
+        ticket.setValorTotal(cobranca.valor());
 
         ticket.setStatus(StatusTicket.ENCERRADO);
 

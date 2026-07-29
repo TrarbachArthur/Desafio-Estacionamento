@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -69,4 +70,11 @@ public class Ticket {
         this.status = StatusTicket.ABERTO;
     }
 
+    public Long getPermanenciaMinutos() {
+        if (this.saida == null) {
+            return null;
+        }
+
+        return Duration.between(this.entrada, this.saida).toMinutes();
+    }
 }

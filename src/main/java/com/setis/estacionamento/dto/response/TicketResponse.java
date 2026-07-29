@@ -18,7 +18,7 @@ public record TicketResponse(
         StatusTicket status,
         LocalDateTime entrada,
         LocalDateTime saida,
-        long permanenciaMinutos,
+        Long permanenciaMinutos,
         String valorTotal
 ) {
 }

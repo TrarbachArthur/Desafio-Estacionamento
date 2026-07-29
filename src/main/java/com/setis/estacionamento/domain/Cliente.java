@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -34,7 +35,10 @@ public class Cliente {
         this.assinaturaValidaAte = assinaturaValidaAte;
     }
 
-    public boolean isAssinaturaVigente() {
-        return !assinaturaValidaAte.isBefore(LocalDate.now());
+    public boolean isAssinaturaVigenteEm(LocalDate data) {
+        return !assinaturaValidaAte.isBefore(data);
+    }
+
+    public boolean isAssinaturaVigente() { return isAssinaturaVigenteEm(LocalDate.now());
     }
 }

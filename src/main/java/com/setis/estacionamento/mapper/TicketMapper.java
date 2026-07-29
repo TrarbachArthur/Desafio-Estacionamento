@@ -8,6 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = VagaMapper.class)
 public interface TicketMapper {
-    @Mapping(target = "permanenciaMinutos", ignore = true)
+    @Mapping(target = "permanenciaMinutos", defaultExpression = "java(ticket.getPermanenciaMinutos())")
     TicketResponse toDto(Ticket ticket);
 }
