@@ -1,6 +1,9 @@
 package com.setis.estacionamento.exception;
 
 public enum CodigoErro {
+    // 404
+    RECURSO_NAO_ENCONTRADO,
+
     // 409
     CODIGO_VAGA_DUPLICADO,
     VAGA_OCUPADA,

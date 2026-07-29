@@ -5,10 +5,10 @@ import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVaga;
 import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
+import com.setis.estacionamento.exception.NotFoundException;
 import com.setis.estacionamento.repository.VagaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,7 +40,7 @@ public class VagaService {
     @Transactional
     public Vaga buscarPorId(UUID id) {
         return vagaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nao foi encontrada nenhuma vaga com o id: {id}"));
+                .orElseThrow(() -> new NotFoundException("Vaga", id));
     }
 
     @Transactional

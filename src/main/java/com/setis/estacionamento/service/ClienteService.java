@@ -3,12 +3,11 @@ package com.setis.estacionamento.service;
 import com.setis.estacionamento.domain.Cliente;
 import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
+import com.setis.estacionamento.exception.NotFoundException;
 import com.setis.estacionamento.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -33,8 +32,7 @@ public class ClienteService {
     @Transactional
     public Cliente buscarPorId(UUID id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Nao foi encontrada nenhum cliente com o id: %s".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Cliente", id));
     }
 
     @Transactional

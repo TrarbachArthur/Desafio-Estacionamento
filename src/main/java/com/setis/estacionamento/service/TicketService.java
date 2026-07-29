@@ -13,9 +13,11 @@ import com.setis.estacionamento.domain.enums.TipoVeiculo;
 import com.setis.estacionamento.dto.request.AbrirTicketRequest;
 import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
+import com.setis.estacionamento.exception.NotFoundException;
 import com.setis.estacionamento.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.NotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -95,7 +97,7 @@ public class TicketService {
     @Transactional
     public Ticket buscarPorId(UUID id) {
         return ticketRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Ticket", id));
     }
 
 
