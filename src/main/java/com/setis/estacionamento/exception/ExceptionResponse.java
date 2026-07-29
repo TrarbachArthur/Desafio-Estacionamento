@@ -8,7 +8,7 @@ public record ExceptionResponse(
         CodigoErro codigo,
         String mensagem,
         String path,
-        List<String> erros
+        List<Erro> erros
 ) {
     // Construtor para os casos em que nao existe erros -> []
     public ExceptionResponse(int status, CodigoErro codigo, String mensagem, String path) {

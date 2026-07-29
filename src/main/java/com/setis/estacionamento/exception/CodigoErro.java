@@ -1,6 +1,16 @@
 package com.setis.estacionamento.exception;
 
 public enum CodigoErro {
+    // 400
+    VALIDACAO,
+    CORPO_INVALIDO,
+    PARAMETRO_INVALIDO,
+    PARAMETRO_OBRIGATORIO_AUSENTE,
+    STATUS_NAO_PERMITIDO,
+    ENTRADA_FUTURA,
+    CLIENTE_OBRIGATORIO,
+    CLIENTE_NAO_PERMITIDO,
+
     // 404
     RECURSO_NAO_ENCONTRADO,
 

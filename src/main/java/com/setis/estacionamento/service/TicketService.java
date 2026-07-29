@@ -11,10 +11,7 @@ import com.setis.estacionamento.domain.enums.StatusTicket;
 import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVeiculo;
 import com.setis.estacionamento.dto.request.AbrirTicketRequest;
-import com.setis.estacionamento.exception.CodigoErro;
-import com.setis.estacionamento.exception.ConflictException;
-import com.setis.estacionamento.exception.NotFoundException;
-import com.setis.estacionamento.exception.UnprocessableException;
+import com.setis.estacionamento.exception.*;
 import com.setis.estacionamento.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -109,12 +106,12 @@ public class TicketService {
         Plano plano = request.plano();
 
         if (plano == Plano.MENSALISTA && clienteId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "O plano mensalista exige um cliente cadastrado");
+            throw new BadRequestException(CodigoErro.CLIENTE_OBRIGATORIO,
+                    "O plano %s exige um cliente cadastrado".formatted(plano));
         }
         if (plano != Plano.MENSALISTA && clienteId != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Apenas o plano mensalista registra clientes");
+            throw new BadRequestException(CodigoErro.CLIENTE_NAO_PERMITIDO,
+                    "O plano %s nao permite o registro de clientes".formatted(plano));
         }
 
         // Retorna 404 caso clienteId != null e cliente nao exista
@@ -126,7 +123,7 @@ public class TicketService {
             return LocalDateTime.now();
         }
         if (entrada.isAfter(LocalDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new BadRequestException(CodigoErro.ENTRADA_FUTURA,
                     "O horario de entrada nao pode ser futuro");
         }
 

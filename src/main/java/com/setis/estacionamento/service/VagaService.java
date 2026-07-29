@@ -3,6 +3,7 @@ package com.setis.estacionamento.service;
 import com.setis.estacionamento.domain.Vaga;
 import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVaga;
+import com.setis.estacionamento.exception.BadRequestException;
 import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.exception.NotFoundException;
@@ -48,7 +49,7 @@ public class VagaService {
         Vaga vaga = this.buscarPorId(id);
 
         if (novoStatus == StatusVaga.OCUPADA) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new BadRequestException(CodigoErro.STATUS_NAO_PERMITIDO,
                     "O status %s nao pode ser definido manualmente"
                             .formatted(StatusVaga.OCUPADA));
         }
