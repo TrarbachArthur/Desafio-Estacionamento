@@ -10,11 +10,15 @@ Pré-requisito: JDK 21 instalado no ambiente
 
 Com a execução do comando, a API sobe em `http://localhost:8080`, sem nenhum passo adicional.
 
+Para desabilitar o inicialização do banco de dados, basta alterar o arquivo ```application.properties``` para que possua (```true``` por padrão no repositório) ```spring.jpa.defer-datasource-initialization=false```
+
 ## Como rodar os testes
 
 Os testes são executados manualmente. O projeto está configurado para inicializar o banco de dados com valores pré-determinados, para facilitar a validação dos requisitos, mas essa configuração não deve ser refletida, caso o projeto fosse colocado em produção (pode ser desativada com uma configuração em ```application.properties```). Essa decisão é totalmente baseada no uso de banco em memória, que impede que valores sejam mantidos entre execuções. Em um projeto devidamente finalizado, o H2 seria substituido por um banco real, que permitiria testes mais consistentes, sem a necessidade dessa inicialização.
 
 Para a execução dos testes, são disponibilizados arquivos .http dentro da pasta /examples/ com diversas requisições, basta executar o projeto e executar cada uma das requisições disponíveis. Cada arquivo funciona independentemente, mas é recomendado que sejam executadas todas as requisições de um mesmo arquivo em ordem sequencial, para evitar resultados inesperados. Por conveniência, os arquivos foram separados entre os requisitos funcionais solicitados, já que foi esse o fluxo de desenvolvimento escolhido.
+
+Para melhor visualização dos resultados de ```rf06.http``` é recomendado preencher o banco através da execução de outros arquivos anteriores.
 
 ## Decisões técnicas
 
@@ -60,6 +64,9 @@ Juntamente à Strategy foi implementada uma Factory, responsável pelo "roteamen
 
 8. **permanenciaMinutos é ```null``` na abertura do ticket**. Na especificação, o campo não existe no momento da criação do ticket, porém, como campos nulos não influenciam na avaliação da resposta final (e podem ser ocultados), o campo foi mantido na resposta da criação de tickets.
 
+
+9. **Tickets encerrados permitem novos tickets no mesmo horário**. Pensando no contexto do desafio, visando manter a simplicidade, e facilitar os testes, não foi considerada uma política que proibisse tickets "duplicados" (Ex.: mesma placa com mesmo horário de entrada).
+
 ## Formato de erro
 
 A especificação solicita o uso de `@RestControllerAdvice`. Todas as decisões, e criação de exceções, foram baseadas na tentativa de manter o projeto organizado e facilmente ajustável.
@@ -88,21 +95,61 @@ Para certificar que nenhum erro fugiria às regras de retorno, foi definido tamb
 
 ## Formato de paginação
 
-Ainda não implementado
+Apenas ```GET /v1/tickets``` é paginado, por premissa assumida.
+
+Foi criado um formato de paginação simples, porém específico para o projeto, para evitar a exposição de componentes internos nos endpoints.
+
+Os parâmetros de paginaçãos são ```page``` (default 0) e ```size``` (default 20, máximo 50, configurável em ```application.properties```) que representam, respectivamente, a página a ser consultada e o tamanho de cada página.
+Valores fora da faixa aceita são ajustados para os limites aceitos (```page >= 0``` e ```1 <= size <= 50```).
+
+O retorno é ordenado de maneira decrescente, considerando a ```entrada```, tendo em vista que, ao observar um histórico, costuma ser mais relevante visualizar ocorrências mais recentes do que se busca.
+
+Formato de paginação definido:
+```json
+{
+  "conteudo": [
+    {
+      "id": "73330ee4-caa7-4322-8c6a-2e03c1addd3f",
+      "placa": "ABC1M23",
+      "tipoVeiculo": "CARRO",
+      "plano": "MENSALISTA",
+      "planoAplicado": "MENSALISTA",
+      "cliente": {
+        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "nome": "Maria Silva",
+        "documento": "12345678901"
+      },
+      "vaga": {
+        "id": "22222222-2222-2222-2222-000000000007",
+        "codigo": "A-07",
+        "tipo": "PADRAO"
+      },
+      "status": "ENCERRADO",
+      "entrada": "2026-03-10T08:00:00",
+      "saida": "2026-03-10T20:00:00",
+      "permanenciaMinutos": 720,
+      "valorTotal": "0.00"
+    }
+  ],
+  "paginaAtual": 0,
+  "tamanho": 10,
+  "totalElementos": 1,
+  "totalPaginas": 1,
+  "ultimaPagina": true
+}
+```
 
 ## O que ficou de fora
 
-* RF06
-* Possíveis descumprimentos do contrato da API, será feita checagem antes do prazo final de entrega, mas é necessário implementar RNF01.
-* Critérios de Destaque
+Os critérios de destaque não foram implementados devido ao pouco tempo para execução do desafio, considerando a necessidade familiarização com algumas tecnologias, e os contratempos profissionais durante o período de realização do teste.
 
-Todos os componentes listados acima não foram implementados, devido ao pouco tempo para o desenvolvimento do projeto, considerando a pouca experiência que tinha com Spring Boot e outras tecnologias utilizadas.
+Em relação aos testes unitários, a política de cobrança já foi implementada pensando na implementação dos testes (motivo da presença do método ```de``` em ```ContextoCobranca```, para os casos em que ```cliente == null```), mas infelizmente o tempo não foi suficiente para finalizar a implementação.
 
 ## Uso de IA
 
 **Não foi utilizado IA para o desenvolvimento de nenhuma parte do código do projeto**
 
-No sentido de desenvolvimento, o uso de inteligência artificial se restringiu a estudo das tecnologias utilizadas e pesquisa de possíveis decisões técnicas, assim como os seus trade-offs, permitindo que decisões de projeto fossem definidas com mais assertividade.
+No sentido de desenvolvimento, o uso de inteligência artificial se restringiu ao estudo das tecnologias utilizadas e pesquisa de possíveis decisões técnicas, assim como os seus trade-offs, permitindo que decisões de projeto fossem definidas com mais assertividade.
 
 Entre os principais motivos de consulta a ferramentas de pesquisa/IA estão:
  * Boas práticas relacionadas às tecnologias aplicadas
@@ -113,3 +160,10 @@ Fora do desenvolvimento direto do projeto, foi utilizada IA (Claude) para aceler
 
  * Desenvolvimento dos arquivos .http, buscando testar todas as possibilidades listadas na especificação, além de algumas premissas assumidas.
  * Geração do .sql para carga inicial do banco de dados, utilizado exclusivamente para testes manuais.
+ * Revisão final do projeto, buscando detectar erros relevantes antes da entrega final. Utilização apenas para detecção do que pode precisar ser corrigido, sem sugestões ou alterações diretas (se houverem correções, terão commits prefixados por ai-fix)
+
+## Decisões tomadas que poderiam ser diferentes
+
+Algumas decisões tomadas durante o desenvolvimento do desafio se provaram não ideais, e eu provavelmente não as repetiria em uma nova oportunidade. São algumas delas:
+* **Não implementação de um banco de dados "real"**. A não permanência dos dados no banco prejudicou muito a validação rápida de novas features. Acredito que o tempo investido repetindo testes básicos poderia ter sido remanejado para um setup inicial do projeto com um banco de dados real.
+* **Demora para implementação da política de exceções**. A pouca familiaridade com o framework, juntamente com as curtas seções de desenvolvimento que fui capaz de realizar, me fizeram decidir por adiar a implementação do formato de erro e da política de exceções. Essa decisão dificultou muito a implementação tardia, que precisou levar em consideração as exceções "placeholder" que eu tinha utilizado antes. Esquecer de atualizar alguma exceção, juntamente com os testes demorados (ponto anterior), tornou a implementação muito lenta.
