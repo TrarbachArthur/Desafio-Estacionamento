@@ -1,6 +1,5 @@
 package com.setis.estacionamento.dto.response;
 
-import com.setis.estacionamento.domain.Ticket;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

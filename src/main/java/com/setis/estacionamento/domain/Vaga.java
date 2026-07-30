@@ -2,7 +2,6 @@ package com.setis.estacionamento.domain;
 
 import com.setis.estacionamento.domain.enums.StatusVaga;
 import com.setis.estacionamento.domain.enums.TipoVaga;
-import com.setis.estacionamento.domain.enums.TipoVeiculo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,6 @@
 package com.setis.estacionamento.domain.cobranca;
 
 import com.setis.estacionamento.domain.Cliente;
-import org.hibernate.grammars.hql.HqlParser;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

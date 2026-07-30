@@ -1,6 +1,5 @@
 package com.setis.estacionamento.exception;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record ExceptionResponse(

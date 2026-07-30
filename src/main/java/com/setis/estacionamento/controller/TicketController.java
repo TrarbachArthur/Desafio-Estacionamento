@@ -10,7 +10,6 @@ import com.setis.estacionamento.dto.response.TicketResponse;
 import com.setis.estacionamento.mapper.TicketMapper;
 import com.setis.estacionamento.service.TicketService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

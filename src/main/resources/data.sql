@@ -2,8 +2,7 @@
 --
 -- O H2 roda em memoria e perde tudo a cada restart. Sem dados previsiveis, reproduzir os 12 casos
 -- da tabela de referencia do RF05 exigiria criar vaga e cliente e copiar os UUIDs gerados a cada
--- execucao. Com IDs literais, tanto docs/requests/estacionamento.http quanto
--- docs/requests/verificar-rf05.sh viram scripts fixos, executaveis quantas vezes for preciso.
+-- execucao.
 --
 -- Requer spring.jpa.defer-datasource-initialization: true (ver application.properties), senao este
 -- arquivo roda antes de o Hibernate criar as tabelas.
