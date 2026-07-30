@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public record CriarClienteRequest(
     @NotBlank(message = "e obrigatorio")
-    @Size(min = 3, max = 120, message = "e obrigatorio")
+    @Size(min = 3, max = 120, message = "deve ter entre 3 e 120 caracteres")
     String nome,
 
     @NotBlank(message = "e obrigatorio")
