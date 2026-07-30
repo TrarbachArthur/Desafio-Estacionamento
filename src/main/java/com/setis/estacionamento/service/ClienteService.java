@@ -5,9 +5,9 @@ import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.exception.NotFoundException;
 import com.setis.estacionamento.repository.ClienteRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class ClienteService {
                 new Cliente(cliente.getNome(), cliente.getDocumento(), cliente.getAssinaturaValidaAte()));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Cliente buscarPorId(UUID id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cliente", id));

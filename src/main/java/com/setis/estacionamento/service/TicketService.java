@@ -13,11 +13,11 @@ import com.setis.estacionamento.domain.enums.TipoVeiculo;
 import com.setis.estacionamento.dto.request.AbrirTicketRequest;
 import com.setis.estacionamento.exception.*;
 import com.setis.estacionamento.repository.TicketRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,14 +92,14 @@ public class TicketService {
         return ticket;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Ticket buscarPorId(UUID id) {
         return ticketRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Ticket", id));
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Ticket> buscarComFiltro(
             String placa, StatusTicket status, Plano plano,
             LocalDate dataInicio, LocalDate dataFim, Pageable paginacao) {

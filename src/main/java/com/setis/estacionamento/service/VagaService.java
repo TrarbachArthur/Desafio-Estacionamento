@@ -8,9 +8,9 @@ import com.setis.estacionamento.exception.CodigoErro;
 import com.setis.estacionamento.exception.ConflictException;
 import com.setis.estacionamento.exception.NotFoundException;
 import com.setis.estacionamento.repository.VagaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,12 +31,12 @@ public class VagaService {
         return vagaRepository.save(new Vaga(vaga.getCodigo(), vaga.getTipoVaga()));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Vaga> listar(TipoVaga tipoVaga, StatusVaga statusVaga) {
         return vagaRepository.buscaComFiltros(tipoVaga, statusVaga);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Vaga buscarPorId(UUID id) {
         return vagaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Vaga", id));
