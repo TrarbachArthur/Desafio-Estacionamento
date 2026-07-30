@@ -99,7 +99,7 @@ Apenas ```GET /v1/tickets``` é paginado, por premissa assumida.
 
 Foi criado um formato de paginação simples, porém específico para o projeto, para evitar a exposição de componentes internos nos endpoints.
 
-Os parâmetros de paginaçãos são ```page``` (default 0) e ```size``` (default 20, máximo 50, configurável em ```application.properties```) que representam, respectivamente, a página a ser consultada e o tamanho de cada página.
+Os parâmetros de paginaçãos são ```page``` (default 0) e ```size``` (default 10, máximo 50, configurável em ```application.properties```) que representam, respectivamente, a página a ser consultada e o tamanho de cada página.
 Valores fora da faixa aceita são ajustados para os limites aceitos (```page >= 0``` e ```1 <= size <= 50```).
 
 O retorno é ordenado de maneira decrescente, considerando a ```entrada```, tendo em vista que, ao observar um histórico, costuma ser mais relevante visualizar ocorrências mais recentes do que se busca.
