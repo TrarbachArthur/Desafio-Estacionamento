@@ -109,7 +109,7 @@ public class TicketService {
             LocalDate dataInicio, LocalDate dataFim, Pageable paginacao) {
 
         if (dataInicio != null && dataFim != null && dataInicio.isAfter(dataFim)) {
-            throw new BadRequestException(CodigoErro.ENTRADA_FUTURA,
+            throw new BadRequestException(CodigoErro.PERIODO_INVALIDO,
                     "dataInicio (%s) nao pode ser posterior a dataFim (%s)".formatted(dataInicio, dataFim));
         }
 
