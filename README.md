@@ -14,6 +14,12 @@ Para desabilitar o inicialização do banco de dados, basta alterar o arquivo ``
 
 ## Como rodar os testes
 
+### Testes unitários
+Para executas os testes unitários, basta rodar:
+
+```./mvnw clean verify``` para reempacotar o projeto e rodar testes unitários e de integração (não implementados), ou ```./mvnw test``` que compila o código e executa apenas os testes unitários.
+
+### Testes manuais
 Os testes são executados manualmente. O projeto está configurado para inicializar o banco de dados com valores pré-determinados, para facilitar a validação dos requisitos, mas essa configuração não deve ser refletida, caso o projeto fosse colocado em produção (pode ser desativada com uma configuração em ```application.properties```). Essa decisão é totalmente baseada no uso de banco em memória, que impede que valores sejam mantidos entre execuções. Em um projeto devidamente finalizado, o H2 seria substituido por um banco real, que permitiria testes mais consistentes, sem a necessidade dessa inicialização.
 
 Para a execução dos testes, são disponibilizados arquivos .http dentro da pasta /examples/ com diversas requisições, basta executar o projeto e executar cada uma das requisições disponíveis. Cada arquivo funciona independentemente, mas é recomendado que sejam executadas todas as requisições de um mesmo arquivo em ordem sequencial, para evitar resultados inesperados. Por conveniência, os arquivos foram separados entre os requisitos funcionais solicitados, já que foi esse o fluxo de desenvolvimento escolhido.
