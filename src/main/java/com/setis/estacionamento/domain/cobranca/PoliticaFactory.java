@@ -1,6 +1,8 @@
 package com.setis.estacionamento.domain.cobranca;
 
 import com.setis.estacionamento.domain.enums.Plano;
+import com.setis.estacionamento.exception.BadRequestException;
+import com.setis.estacionamento.exception.CodigoErro;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -24,7 +26,7 @@ public class PoliticaFactory {
         PoliticaCobranca politica = politicasMap.get(plano);
 
         if (politica == null) {
-            throw new IllegalArgumentException("Nenhuma politica de pagamento para o plano: " + plano);
+            throw new BadRequestException(CodigoErro.PLANO_SEM_POLITICA, "Nenhuma politica de pagamento para o plano: " + plano);
         }
 
         return politica;
