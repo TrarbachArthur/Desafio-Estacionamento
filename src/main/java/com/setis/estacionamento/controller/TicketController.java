@@ -47,7 +47,7 @@ public class TicketController {
     @PostMapping
     public ResponseEntity<TicketResponse> abrirTicket(@Valid @RequestBody AbrirTicketRequest request, UriComponentsBuilder uriBuilder) {
         Ticket ticket = ticketService.abrir(request);
-        URI localizacao = uriBuilder.path("/tickets/{id}").buildAndExpand(ticket.getId()).toUri();
+        URI localizacao = uriBuilder.path("v1/tickets/{id}").buildAndExpand(ticket.getId()).toUri();
 
         return ResponseEntity.created(localizacao).body(ticketMapper.toDto(ticket));
     }
