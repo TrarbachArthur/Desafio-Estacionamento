@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface VagaMapper {
 
+    @Mapping(target = "tipo", source = "tipoVaga")
+    @Mapping(target = "status", source = "statusVaga")
     VagaResponse toDto(Vaga vaga);
 
     @Mapping(target = "id", ignore = true)

@@ -8,6 +8,6 @@ import java.util.UUID;
 public record VagaResponse(
     UUID id,
     String codigo,
-    TipoVaga tipoVaga,
-    StatusVaga statusVaga) {
+    TipoVaga tipo,
+    StatusVaga status) {
 }
